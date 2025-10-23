@@ -25,11 +25,11 @@
 " [vim-notes]: http://peterodding.com/code/vim/notes/
 " [vim-session]: http://peterodding.com/code/vim/session/
 
-if !exists('g:xolox#misc#cursorhold#handlers')
-  let g:xolox#misc#cursorhold#handlers = []
+if !exists('g:vmisc#misc#cursorhold#handlers')
+  let g:vmisc#misc#cursorhold#handlers = []
 endif
 
-function! xolox#misc#cursorhold#register(options)
+function! vmisc#misc#cursorhold#register(options)
   " Register a [CursorHold][] event handler with a custom interval. This
   " function takes a single argument which is a dictionary with the following
   " fields:
@@ -42,26 +42,26 @@ function! xolox#misc#cursorhold#register(options)
   "
   "  - **interval** (optional): The number of seconds between calls to the
   "    event handler (defaults to 4).
-  call add(g:xolox#misc#cursorhold#handlers, copy(a:options))
+  call add(g:vmisc#misc#cursorhold#handlers, copy(a:options))
 endfunction
 
-function! xolox#misc#cursorhold#autocmd()
+function! vmisc#misc#cursorhold#autocmd()
   " The 'top level event handler' that's called by Vim whenever the
   " [CursorHold][] or [CursorHoldI][] event fires. It iterates through the
-  " event handlers registered using `xolox#misc#cursorhold#register()` and
+  " event handlers registered using `vmisc#misc#cursorhold#register()` and
   " calls each event handler at the appropriate interval, keeping track of
   " the time when each event handler was last run.
-  for handler in g:xolox#misc#cursorhold#handlers
+  for handler in g:vmisc#misc#cursorhold#handlers
     let function = handler['function']
     let last_run = get(handler, 'last_run', 0)
     let interval = get(handler, 'interval', 4)
-    call xolox#misc#msg#debug("vim-misc %s: Checking handler %s with interval %i and last run %i ..", g:xolox#misc#version, function, interval, last_run)
+    call vmisc#misc#msg#debug("vim-misc %s: Checking handler %s with interval %i and last run %i ..", g:vmisc#misc#version, function, interval, last_run)
     " Rate limit in case &updatetime is set (very) low.
     let time_until_next_run = (last_run + interval) - localtime()
     if time_until_next_run > 0
-      call xolox#misc#msg#debug("vim-misc %s: Rate limiting handler %s (time until next run: %i seconds).", g:xolox#misc#version, function, time_until_next_run)
+      call vmisc#misc#msg#debug("vim-misc %s: Rate limiting handler %s (time until next run: %i seconds).", g:vmisc#misc#version, function, time_until_next_run)
     else
-      call xolox#misc#msg#debug("vim-misc %s: Running handler %s ..", g:xolox#misc#version, function)
+      call vmisc#misc#msg#debug("vim-misc %s: Running handler %s ..", g:vmisc#misc#version, function)
       call call(function, get(handler, 'arguments', []))
       let handler['last_run'] = localtime()
     endif

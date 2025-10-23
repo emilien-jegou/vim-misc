@@ -4,7 +4,7 @@
 " Last Change: June 2, 2013
 " URL: http://peterodding.com/code/vim/misc/
 
-function! xolox#misc#format#pluralize(count, singular, plural) " {{{1
+function! vmisc#misc#format#pluralize(count, singular, plural) " {{{1
   " Concatenate a counter (the first argument, expected to be an integer) with
   " a singular or plural label (the second and third arguments, both expected
   " to be strings).
@@ -15,7 +15,7 @@ function! xolox#misc#format#pluralize(count, singular, plural) " {{{1
   endif
 endfunction
 
-function! xolox#misc#format#timestamp(ts) " {{{1
+function! vmisc#misc#format#timestamp(ts) " {{{1
   " Format a time stamp (a string containing a formatted floating point
   " number) into a human friendly format, for example 70 seconds is phrased as
   " "1 minute and 10 seconds".

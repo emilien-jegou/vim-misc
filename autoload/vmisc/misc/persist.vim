@@ -11,7 +11,7 @@
 " functions to persist and recall Vim values from/to files. This is very
 " useful for communication between (possibly concurrent) Vim processes.
 
-function! xolox#misc#persist#load(filename, ...) " {{{1
+function! vmisc#misc#persist#load(filename, ...) " {{{1
   " Read a Vim value like a number, string, list or dictionary from a file
   " using [readfile()][] and [eval()][]. The first argument is the filename of
   " the file to read (a string). The optional second argument specifies the
@@ -30,7 +30,7 @@ function! xolox#misc#persist#load(filename, ...) " {{{1
   endtry
 endfunction
 
-function! xolox#misc#persist#save(filename, value) " {{{1
+function! vmisc#misc#persist#save(filename, value) " {{{1
   " Write a Vim value like a number, string, list or dictionary to a file
   " using [string()][] and [writefile()][]. The first argument is the filename
   " of the file to write (a string) and the second argument is the value to
@@ -44,7 +44,7 @@ function! xolox#misc#persist#save(filename, value) " {{{1
   "
   " [string()]: http://vimdoc.sourceforge.net/htmldoc/eval.html#string()
   " [writefile()]: http://vimdoc.sourceforge.net/htmldoc/eval.html#writefile()
-  return xolox#misc#perm#update(a:filename, split(string(a:value), "\n"))
+  return vmisc#misc#perm#update(a:filename, split(string(a:value), "\n"))
 endfunction
 
 " vim: ts=2 sw=2 et

@@ -20,13 +20,13 @@
 " [RecentNotes]: http://peterodding.com/code/vim/notes/#recentnotes_command
 " [ShowTaggedNotes]: http://peterodding.com/code/vim/notes/#showtaggednotes_command
 
-function! xolox#misc#buffer#is_empty() " {{{1
+function! vmisc#misc#buffer#is_empty() " {{{1
   " Checks if the current buffer is an empty, unchanged buffer which can be
   " reused. Returns 1 if an empty buffer is found, 0 otherwise.
   return !&modified && expand('%') == '' && line('$') <= 1 && getline(1) == ''
 endfunction
 
-function! xolox#misc#buffer#prepare(...) " {{{1
+function! vmisc#misc#buffer#prepare(...) " {{{1
   " Open a special buffer, i.e. a buffer that will hold generated contents,
   " not directly edited by the user. The buffer can be customized by passing a
   " dictionary with the following key/value pairs as the first argument:
@@ -50,7 +50,7 @@ function! xolox#misc#buffer#prepare(...) " {{{1
   let winnr = 1
   let found = 0
   for bufnr in tabpagebuflist()
-    if xolox#misc#path#equals(options['path'], bufname(bufnr))
+    if vmisc#misc#path#equals(options['path'], bufname(bufnr))
       execute winnr . 'wincmd w'
       let found = 1
       break
@@ -58,23 +58,23 @@ function! xolox#misc#buffer#prepare(...) " {{{1
       let winnr += 1
     endif
   endfor
-  if !(found || xolox#misc#buffer#is_empty())
+  if !(found || vmisc#misc#buffer#is_empty())
     vsplit
   endif
   silent execute 'edit' fnameescape(options['path'])
   lcd " clear working directory
   setlocal buftype=nofile bufhidden=hide noswapfile
   let &l:statusline = '[' . options['name'] . ']'
-  call xolox#misc#buffer#unlock()
+  call vmisc#misc#buffer#unlock()
   silent %delete
 endfunction
 
-function! xolox#misc#buffer#lock() " {{{1
+function! vmisc#misc#buffer#lock() " {{{1
   " Lock a special buffer so that its contents can no longer be edited.
   setlocal readonly nomodifiable nomodified
 endfunction
 
-function! xolox#misc#buffer#unlock() " {{{1
+function! vmisc#misc#buffer#unlock() " {{{1
   " Unlock a special buffer so that its content can be updated.
   setlocal noreadonly modifiable
 endfunction

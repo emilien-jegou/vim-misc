@@ -4,23 +4,23 @@
 " Last Change: March 15, 2015
 " URL: http://peterodding.com/code/vim/misc/
 
-if !exists('g:xolox_message_buffer')
+if !exists('g:vmisc_message_buffer')
   " For when I lose my :messages history :-\
-  let g:xolox_message_buffer = 100
+  let g:vmisc_message_buffer = 100
 endif
 
-if !exists('g:xolox_messages')
-  let g:xolox_messages = []
+if !exists('g:vmisc_messages')
+  let g:vmisc_messages = []
 endif
 
-function! xolox#misc#msg#info(...) " {{{1
+function! vmisc#misc#msg#info(...) " {{{1
   " Show a formatted informational message to the user.
   "
   " This function has the same argument handling as Vim's [printf()] []
   " function with one notable difference: Any arguments which are not numbers
   " or strings are coerced to strings using Vim's [string()] [] function.
   "
-  " In the case of `xolox#misc#msg#info()`, automatic string coercion simply
+  " In the case of `vmisc#misc#msg#info()`, automatic string coercion simply
   " makes the function a bit easier to use.
   "
   " The messages emitted by this function have no highlighting. Previously
@@ -31,29 +31,29 @@ function! xolox#misc#msg#info(...) " {{{1
   " the informational messages to look like errors.
   "
   " [hl-title]: http://vimdoc.sourceforge.net/htmldoc/syntax.html#hl-Title
-  " [pr-16]: https://github.com/xolox/vim-misc/pull/16
+  " [pr-16]: https://github.com/vmisc/vim-misc/pull/16
   " [printf()]: http://vimdoc.sourceforge.net/htmldoc/eval.html#printf()
   " [string()]: http://vimdoc.sourceforge.net/htmldoc/eval.html#string()
   call s:show_message('None', a:000)
 endfunction
 
-function! xolox#misc#msg#warn(...) " {{{1
+function! vmisc#misc#msg#warn(...) " {{{1
   " Show a formatted warning message to the user.
   "
   " This function has the same argument handling as the
-  " `xolox#misc#msg#info()` function.
+  " `vmisc#misc#msg#info()` function.
   call s:show_message('WarningMsg', a:000)
 endfunction
 
-function! xolox#misc#msg#debug(...) " {{{1
+function! vmisc#misc#msg#debug(...) " {{{1
   " Show a formatted debugging message to the user, *if the user has enabled
   " increased verbosity by setting Vim's ['verbose'] [] option to one
   " (1) or higher*.
   "
   " This function has the same argument handling as the
-  " `xolox#misc#msg#info()` function.
+  " `vmisc#misc#msg#info()` function.
   "
-  " In the case of `xolox#misc#msg#debug()`, automatic string coercion
+  " In the case of `vmisc#misc#msg#debug()`, automatic string coercion
   " provides lazy evaluation in the sense that complex data structures are
   " only converted to strings when the user has enabled increased verbosity.
   "
@@ -87,15 +87,15 @@ function! s:show_message(hlgroup, args) " {{{1
       augroup END
       execute 'echohl' a:hlgroup
       " Redraw to avoid the |hit-enter| prompt. We use :silent to avoid issues
-      " like this one: https://github.com/xolox/vim-easytags/issues/69.
+      " like this one: https://github.com/vmisc/vim-easytags/issues/69.
       silent! redraw
       for line in split(message, "\n")
         echomsg line
       endfor
-      if g:xolox_message_buffer > 0
-        call add(g:xolox_messages, message)
-        if len(g:xolox_messages) > g:xolox_message_buffer
-          call remove(g:xolox_messages, 0)
+      if g:vmisc_message_buffer > 0
+        call add(g:vmisc_messages, message)
+        if len(g:vmisc_messages) > g:vmisc_message_buffer
+          call remove(g:vmisc_messages, 0)
         endif
       endif
     finally

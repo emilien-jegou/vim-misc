@@ -4,14 +4,14 @@
 " Last Change: June 2, 2013
 " URL: http://peterodding.com/code/vim/misc/
 
-function! xolox#misc#list#unique(list) " {{{1
+function! vmisc#misc#list#unique(list) " {{{1
   " Remove duplicate values from the given list in-place (preserves order).
   call reverse(a:list)
   call filter(a:list, 'count(a:list, v:val) == 1')
   return reverse(a:list)
 endfunction
 
-function! xolox#misc#list#binsert(list, value, ...) " {{{1
+function! vmisc#misc#list#binsert(list, value, ...) " {{{1
   " Performs in-place binary insertion, which depending on your use case can
   " be more efficient than calling Vim's [sort()] [sort] function after each
   " insertion (in cases where a single, final sort is not an option). Expects

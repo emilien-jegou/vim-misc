@@ -13,9 +13,9 @@ if !exists('g:timer_verbosity')
 endif
 
 let s:has_reltime = has('reltime')
-let s:unique_marker = 'xolox#misc#timer#value'
+let s:unique_marker = 'vmisc#misc#timer#value'
 
-function! xolox#misc#timer#resumable() " {{{1
+function! vmisc#misc#timer#resumable() " {{{1
   " Create a resumable timer object. This returns an object (a dictionary with
   " functions) with the following "methods":
   "
@@ -53,7 +53,7 @@ function! xolox#misc#timer#resumable() " {{{1
       throw "timer.stop() called on a timer that was never started!"
     endif
     if s:has_reltime
-      let elapsed_time_string = xolox#misc#str#trim(reltimestr(reltime(self.current)))
+      let elapsed_time_string = vmisc#misc#str#trim(reltimestr(reltime(self.current)))
       " This is a bit silly (converting to a string and then parsing that) but
       " the value of reltime() is documented as being platform specific...
       let [seconds, microseconds] = split(elapsed_time_string, '\.')
@@ -78,13 +78,13 @@ function! xolox#misc#timer#resumable() " {{{1
   return object
 endfunction
 
-function! xolox#misc#timer#start() " {{{1
+function! vmisc#misc#timer#start() " {{{1
   " Start a timer. This returns a list which can later be passed to
-  " `xolox#misc#timer#stop()`.
+  " `vmisc#misc#timer#stop()`.
   return [s:unique_marker, s:has_reltime ? reltime() : localtime()]
 endfunction
 
-function! xolox#misc#timer#stop(...) " {{{1
+function! vmisc#misc#timer#stop(...) " {{{1
   " Show a formatted debugging message to the user, if the user has enabled
   " increased verbosity by setting Vim's ['verbose'] [verbose] option to one
   " (1) or higher.
@@ -92,37 +92,37 @@ function! xolox#misc#timer#stop(...) " {{{1
   " This function has the same argument handling as Vim's [printf()] [printf]
   " function with one difference: At the point where you want the elapsed time
   " to be embedded, you write `%s` and you pass the list returned by
-  " `xolox#misc#timer#start()` as an argument.
+  " `vmisc#misc#timer#start()` as an argument.
   "
   " [verbose]: http://vimdoc.sourceforge.net/htmldoc/options.html#'verbose'
   " [printf]: http://vimdoc.sourceforge.net/htmldoc/eval.html#printf()
   if (g:timer_enabled || &verbose >= g:timer_verbosity)
-    call call('xolox#misc#msg#info', map(copy(a:000), 'xolox#misc#timer#convert(v:val)'))
+    call call('vmisc#misc#msg#info', map(copy(a:000), 'vmisc#misc#timer#convert(v:val)'))
   endif
 endfunction
 
-function! xolox#misc#timer#force(...) " {{{1
+function! vmisc#misc#timer#force(...) " {{{1
   " Show a formatted message to the user. This function has the same argument
   " handling as Vim's [printf()] [printf] function with one difference: At the
   " point where you want the elapsed time to be embedded, you write `%s` and
-  " you pass the list returned by `xolox#misc#timer#start()` as an argument.
-  call call('xolox#misc#msg#info', map(copy(a:000), 'xolox#misc#timer#convert(v:val)'))
+  " you pass the list returned by `vmisc#misc#timer#start()` as an argument.
+  call call('vmisc#misc#msg#info', map(copy(a:000), 'vmisc#misc#timer#convert(v:val)'))
 endfunction
 
-function! xolox#misc#timer#convert(value) " {{{1
-  " Convert the value returned by `xolox#misc#timer#start()` to a string
-  " representation of the elapsed time since `xolox#misc#timer#start()` was
+function! vmisc#misc#timer#convert(value) " {{{1
+  " Convert the value returned by `vmisc#misc#timer#start()` to a string
+  " representation of the elapsed time since `vmisc#misc#timer#start()` was
   " called. Other values are returned unmodified (this allows using it with
   " Vim's [map()][] function).
   "
   " [map()]: http://vimdoc.sourceforge.net/htmldoc/eval.html#map()
   if type(a:value) == type([]) && len(a:value) == 2 && a:value[0] == s:unique_marker
     if s:has_reltime
-      let ts = xolox#misc#str#trim(reltimestr(reltime(a:value[1])))
+      let ts = vmisc#misc#str#trim(reltimestr(reltime(a:value[1])))
     else
       let ts = localtime() - a:value[1]
     endif
-    return xolox#misc#format#timestamp(ts)
+    return vmisc#misc#format#timestamp(ts)
   endif
   return a:value
 endfunction

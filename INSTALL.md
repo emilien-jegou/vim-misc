@@ -10,4 +10,4 @@ If you get warnings about overwriting existing files while unpacking the ZIP arc
 
 ## Installation using a Vim plug-in manager
 
-If you prefer you can also use [Pathogen](http://www.vim.org/scripts/script.php?script_id=2332), [Vundle](https://github.com/gmarik/vundle) or a similar tool to install and update the [vim-misc](https://github.com/xolox/vim-misc) plug-in using a local clone of the git repository. This takes a bit of work to set up the first time but it makes updating much easier, and it keeps each plug-in in its own directory which helps to keep your Vim profile uncluttered.
+If you prefer you can also use [Pathogen](http://www.vim.org/scripts/script.php?script_id=2332), [Vundle](https://github.com/gmarik/vundle) or a similar tool to install and update the [vim-misc](https://github.com/vmisc/vim-misc) plug-in using a local clone of the git repository. This takes a bit of work to set up the first time but it makes updating much easier, and it keeps each plug-in in its own directory which helps to keep your Vim profile uncluttered.

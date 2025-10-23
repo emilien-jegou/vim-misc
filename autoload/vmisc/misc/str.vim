@@ -4,35 +4,35 @@
 " Last Change: September 17, 2014
 " URL: http://peterodding.com/code/vim/misc/
 
-function! xolox#misc#str#slug(s) " {{{1
+function! vmisc#misc#str#slug(s) " {{{1
   " Convert a string to a "slug" - something that can be safely used in
   " filenames and URLs without worrying about quoting/escaping of special
   " characters.
   return join(split(tolower(a:s), '\W\+'), '-')
 endfunction
 
-function! xolox#misc#str#ucfirst(s) " {{{1
+function! vmisc#misc#str#ucfirst(s) " {{{1
   " Uppercase the first character in a string (the first argument).
   return substitute(a:s, '^.', '\U\0', '')
 endfunction
 
-function! xolox#misc#str#unescape(s) " {{{1
+function! vmisc#misc#str#unescape(s) " {{{1
   " Remove back slash escapes from a string (the first argument).
   return substitute(a:s, '\\\(\_.\)', '\1', 'g')
 endfunction
 
-function! xolox#misc#str#compact(s) " {{{1
+function! vmisc#misc#str#compact(s) " {{{1
   " Compact whitespace in a string (the first argument).
   return join(split(a:s), " ")
 endfunction
 
-function! xolox#misc#str#trim(s) " {{{1
+function! vmisc#misc#str#trim(s) " {{{1
   " Trim all whitespace from the start and end of a string (the first
   " argument).
   return substitute(a:s, '^\_s*\(.\{-}\)\_s*$', '\1', '')
 endfunction
 
-function! xolox#misc#str#indent(text, num_spaces) " {{{1
+function! vmisc#misc#str#indent(text, num_spaces) " {{{1
   " Indent all lines in a multi-line string (the first argument) with a
   " specific number of *space characters* (the second argument, an integer).
   let lines = split(a:text, "\n")
@@ -47,7 +47,7 @@ function! xolox#misc#str#indent(text, num_spaces) " {{{1
   return join(lines, "\n")
 endfunction
 
-function! xolox#misc#str#dedent(text) " {{{1
+function! vmisc#misc#str#dedent(text) " {{{1
   " Remove common whitespace from a multi line string.
   let lines = split(a:text, "\n")
   " First we need to determine the common indentation of all non-empty lines.

@@ -4,7 +4,7 @@
 " Last Change: May 19, 2013
 " URL: http://peterodding.com/code/vim/misc/
 
-function! xolox#misc#escape#pattern(string) " {{{1
+function! vmisc#misc#escape#pattern(string) " {{{1
   " Takes a single string argument and converts it into a [:substitute]
   " [subcmd] / [substitute()] [subfun] pattern string that matches the given
   " string literally.
@@ -18,7 +18,7 @@ function! xolox#misc#escape#pattern(string) " {{{1
   return ''
 endfunction
 
-function! xolox#misc#escape#substitute(string) " {{{1
+function! vmisc#misc#escape#substitute(string) " {{{1
   " Takes a single string argument and converts it into a [:substitute]
   " [subcmd] / [substitute()] [subfun] replacement string that inserts the
   " given string literally.
@@ -29,7 +29,7 @@ function! xolox#misc#escape#substitute(string) " {{{1
   return ''
 endfunction
 
-function! xolox#misc#escape#shell(string) " {{{1
+function! vmisc#misc#escape#shell(string) " {{{1
   " Takes a single string argument and converts it into a quoted command line
   " argument.
   "
@@ -40,7 +40,7 @@ function! xolox#misc#escape#shell(string) " {{{1
   " Microsoft Windows).
   "
   " [shellslash]: http://vimdoc.sourceforge.net/htmldoc/options.html#'shellslash'
-  if xolox#misc#os#is_win()
+  if vmisc#misc#os#is_win()
     try
       let ssl_save = &shellslash
       set noshellslash

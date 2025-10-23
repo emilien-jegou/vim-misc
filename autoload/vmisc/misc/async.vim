@@ -4,7 +4,7 @@
 " Last Change: September 17, 2014
 " URL: http://peterodding.com/code/vim/misc/
 "
-" The `xolox#misc#async#call()` function builds on top of `xolox#misc#os#exec()`
+" The `vmisc#misc#async#call()` function builds on top of `vmisc#misc#os#exec()`
 " to support asynchronous evaluation of Vim scripts. The first (and for now
 " only) use case is my [vim-easytags][] plug-in which has a bunch of
 " conflicting requirements:
@@ -40,18 +40,18 @@
 "
 " [vim-easytags]: http://peterodding.com/code/vim/easytags/
 
-if !exists('g:xolox#misc#async#counter')
+if !exists('g:vmisc#misc#async#counter')
   " Increasing integer number used to match asynchronous responses to the
   " requests that generated them.
-  let g:xolox#misc#async#counter = 1
+  let g:vmisc#misc#async#counter = 1
 endif
 
-if !exists('g:xolox#misc#async#requests')
+if !exists('g:vmisc#misc#async#requests')
   " Queue of asynchronous requests that haven't received a response yet.
-  let g:xolox#misc#async#requests = {}
+  let g:vmisc#misc#async#requests = {}
 endif
 
-function! xolox#misc#async#call(options) " {{{1
+function! vmisc#misc#async#call(options) " {{{1
   " Call a Vim script function asynchronously by starting a hidden Vim process
   " in the background. Once the function returns the hidden Vim process
   " terminates itself. This function takes a single argument which is a
@@ -140,11 +140,11 @@ function! xolox#misc#async#call(options) " {{{1
   " [vim-misc]: http://peterodding.com/code/vim/misc/
   " [viminfo]: http://vimdoc.sourceforge.net/htmldoc/starting.html#viminfo
   " [vimrc]: http://vimdoc.sourceforge.net/htmldoc/starting.html#vimrc
-  let unique_number = g:xolox#misc#async#counter
-  let g:xolox#misc#async#counter += 1
+  let unique_number = g:vmisc#misc#async#counter
+  let g:vmisc#misc#async#counter += 1
   let request = {'function': a:options['function']}
   let request['arguments'] = get(a:options, 'arguments', [])
-  let request['starttime'] = xolox#misc#timer#start()
+  let request['starttime'] = vmisc#misc#timer#start()
   let request['number'] = unique_number
   let callback = get(a:options, 'callback')
   if !empty(callback)
@@ -156,29 +156,29 @@ function! xolox#misc#async#call(options) " {{{1
     let temporary_file = tempname()
     let request['temporary_file'] = temporary_file
   endif
-  let vim_command = printf('let &rtp = %s | call xolox#misc#async#inside_child(%s)', string(&rtp), string(request))
-  call xolox#misc#msg#debug("vim-misc %s: Generated asynchronous Vim command #%i: %s", g:xolox#misc#version, unique_number, vim_command)
-  let quoted_program = xolox#misc#escape#shell(xolox#misc#os#find_vim('vim'))
-  let quoted_command = xolox#misc#escape#shell(vim_command)
+  let vim_command = printf('let &rtp = %s | call vmisc#misc#async#inside_child(%s)', string(&rtp), string(request))
+  call vmisc#misc#msg#debug("vim-misc %s: Generated asynchronous Vim command #%i: %s", g:vmisc#misc#version, unique_number, vim_command)
+  let quoted_program = vmisc#misc#escape#shell(vmisc#misc#os#find_vim('vim'))
+  let quoted_command = vmisc#misc#escape#shell(vim_command)
   let shell_command = printf('%s -u NONE -U NONE --noplugin -n -N -i NONE --cmd %s', quoted_program, quoted_command)
-  call xolox#misc#msg#debug("vim-misc %s: Generated asynchronous shell command #%i: %s", g:xolox#misc#version, unique_number, shell_command)
-  call xolox#misc#os#exec({'command': shell_command, 'async': 1})
-  let g:xolox#misc#async#requests[unique_number] = request
+  call vmisc#misc#msg#debug("vim-misc %s: Generated asynchronous shell command #%i: %s", g:vmisc#misc#version, unique_number, shell_command)
+  call vmisc#misc#os#exec({'command': shell_command, 'async': 1})
+  let g:vmisc#misc#async#requests[unique_number] = request
 endfunction
 
-function! xolox#misc#async#inside_child(request) " {{{1
+function! vmisc#misc#async#inside_child(request) " {{{1
   " Entry point inside the hidden Vim process that runs in the background.
-  " Invoked indirectly by `xolox#misc#async#call()` because it runs a command
+  " Invoked indirectly by `vmisc#misc#async#call()` because it runs a command
   " similar to the following:
   "
-  "     vim --cmd 'call xolox#misc#async#inside_child(...)'
+  "     vim --cmd 'call vmisc#misc#async#inside_child(...)'
   "
   " This function is responsible for calling the user defined function,
   " capturing exceptions and reporting the results back to the parent Vim
   " process using Vim's client/server support or a temporary file.
   try
     let response = {'number': a:request['number']}
-    let starttime = xolox#misc#timer#start()
+    let starttime = vmisc#misc#timer#start()
     try
       " Call the user defined function and store its result.
       let response['result'] = call(a:request['function'], a:request['arguments'])
@@ -188,16 +188,16 @@ function! xolox#misc#async#inside_child(request) " {{{1
       let response['throwpoint'] = v:throwpoint
     endtry
     " Record the elapsed time.
-    let response['elapsed_time'] = xolox#misc#timer#convert(starttime)
+    let response['elapsed_time'] = vmisc#misc#timer#convert(starttime)
     " Communicate the results back to the master Vim process.
     let servername = get(a:request, 'servername', '')
     if !empty(servername)
       " Actively notify the parent process using Vim's client/server support?
-      call remote_expr(servername, printf('xolox#misc#async#callback_to_parent(%s)', string(response)))
+      call remote_expr(servername, printf('vmisc#misc#async#callback_to_parent(%s)', string(response)))
     else
       " 'Passively' notify the parent process by creating the expected
       " temporary file.
-      call xolox#misc#persist#save(a:request['temporary_file'], response)
+      call vmisc#misc#persist#save(a:request['temporary_file'], response)
     endif
   finally
     " Make sure we terminate this hidden Vim process.
@@ -205,48 +205,48 @@ function! xolox#misc#async#inside_child(request) " {{{1
   endtry
 endfunction
 
-function! xolox#misc#async#callback_to_parent(response) " {{{1
+function! vmisc#misc#async#callback_to_parent(response) " {{{1
   " When Vim was compiled with client/server support this function (in the
-  " parent process) will be called by `xolox#misc#async#inside_child()` (in
+  " parent process) will be called by `vmisc#misc#async#inside_child()` (in
   " the child process) after the user defined function has returned. This
   " enables more or less instant callbacks after running an asynchronous
   " function.
   let unique_number = a:response['number']
-  let request = g:xolox#misc#async#requests[unique_number]
-  call xolox#misc#timer#stop("vim-misc %s: Processing asynchronous callback #%i after %s ..", g:xolox#misc#version, unique_number, request['starttime'])
-  call remove(g:xolox#misc#async#requests, unique_number)
+  let request = g:vmisc#misc#async#requests[unique_number]
+  call vmisc#misc#timer#stop("vim-misc %s: Processing asynchronous callback #%i after %s ..", g:vmisc#misc#version, unique_number, request['starttime'])
+  call remove(g:vmisc#misc#async#requests, unique_number)
   let callback = get(request, 'callback')
   if !empty(callback)
     call call(callback, [a:response])
   endif
 endfunction
 
-function! xolox#misc#async#periodic_callback() " {{{1
+function! vmisc#misc#async#periodic_callback() " {{{1
   " When client/server support is not being used the vim-misc plug-in
   " improvises: It uses Vim's [CursorHold][] event to periodically check if an
   " asynchronous process has written its results to one of the expected
   " temporary files. If a response is found the temporary file is read and
-  " deleted and then `xolox#misc#async#callback_to_parent()` is called to
+  " deleted and then `vmisc#misc#async#callback_to_parent()` is called to
   " process the response.
   "
   " [CursorHold]: http://vimdoc.sourceforge.net/htmldoc/autocmd.html#CursorHold
-  if !empty(g:xolox#misc#async#requests)
+  if !empty(g:vmisc#misc#async#requests)
     let num_processed = 0
-    call xolox#misc#msg#debug("vim-misc %s: Checking for asynchronous responses (%i responses not yet received) ..", g:xolox#misc#version, len(g:xolox#misc#async#requests))
-    for unique_number in sort(keys(g:xolox#misc#async#requests))
-      let request = g:xolox#misc#async#requests[unique_number]
+    call vmisc#misc#msg#debug("vim-misc %s: Checking for asynchronous responses (%i responses not yet received) ..", g:vmisc#misc#version, len(g:vmisc#misc#async#requests))
+    for unique_number in sort(keys(g:vmisc#misc#async#requests))
+      let request = g:vmisc#misc#async#requests[unique_number]
       let temporary_file = get(request, 'temporary_file', '')
       if !empty(temporary_file) && getfsize(temporary_file) > 0
         try
-          call xolox#misc#msg#debug("vim-misc %s: Found asynchronous response by %s in %s ..", g:xolox#misc#version, request['function'], temporary_file)
-          call xolox#misc#async#callback_to_parent(xolox#misc#persist#load(temporary_file))
+          call vmisc#misc#msg#debug("vim-misc %s: Found asynchronous response by %s in %s ..", g:vmisc#misc#version, request['function'], temporary_file)
+          call vmisc#misc#async#callback_to_parent(vmisc#misc#persist#load(temporary_file))
           let num_processed += 1
         finally
           call delete(temporary_file)
         endtry
       endif
     endfor
-    call xolox#misc#msg#debug("vim-misc %s: Processed %i asynchronous responses (%i responses not yet received).", g:xolox#misc#version, num_processed, len(g:xolox#misc#async#requests))
+    call vmisc#misc#msg#debug("vim-misc %s: Processed %i asynchronous responses (%i responses not yet received).", g:vmisc#misc#version, num_processed, len(g:vmisc#misc#async#requests))
   endif
 endfunction
 
@@ -256,6 +256,6 @@ endfunction
 " value for &updatetime is four seconds. Because vim-misc never modifies
 " &updatetime the interval will effectively default to four seconds unless the
 " user has set &updatetime to a lower value themselves.
-call xolox#misc#cursorhold#register({'function': 'xolox#misc#async#periodic_callback', 'interval': 1})
+call vmisc#misc#cursorhold#register({'function': 'vmisc#misc#async#periodic_callback', 'interval': 1})
 
 " vim: ts=2 sw=2 et
